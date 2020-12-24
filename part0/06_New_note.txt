@@ -1,0 +1,12 @@
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+note over browser:
+form data sent 
+in the http body as json string
+end note
+
+server-->browser: HTTP response satus 201 Created success
+note over server:
+http response payload json sting
+{"message":"note created"}
+
