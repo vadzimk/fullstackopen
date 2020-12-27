@@ -2,11 +2,11 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 
 const Button = ({text, handleClick}) => <button onClick={handleClick}>{text}</button>
-const Statistic = ({text, value}) => <div>{text} {value}</div>
+const Statistic = ({text, value}) => <tr><td>{text}</td><td>{value}</td></tr>
 const Statistics = ({good, neutral, bad, avg, all, positive}) => {
     if(all) {
         return (
-            <div>
+            <table>
                 <p><strong>statistics</strong></p>
                 <Statistic text={'good'} value={good}/>
                 <Statistic text={'neutral'} value={neutral}/>
@@ -14,7 +14,7 @@ const Statistics = ({good, neutral, bad, avg, all, positive}) => {
                 <Statistic text={'all'} value={all}/>
                 <Statistic text={'average'} value={avg}/>
                 <Statistic text={'positive'} value={positive}/>
-            </div>
+            </table>
         )
     }
     //conditional rendering
