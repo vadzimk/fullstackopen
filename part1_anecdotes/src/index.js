@@ -5,16 +5,27 @@ import ReactDOM from 'react-dom';
 const App = (props) => {
 
     const [selected, setSelected] = useState(0)
+
+    const [votes, setVote] = useState(new Array(anecdotes.length).fill(0))  // zero filled array
+    // console.log('votes', votes)
     const handleClick = () => {
         const newValue = Math.floor(Math.random() * anecdotes.length )
         setSelected(newValue)
     }
 
+    const handleVote = ()=>{
+        // correct way of updating component's state stored in mutable objects is to make a copy of the object
+        const votesCopy = [...votes]
+        votesCopy[selected]+=1
+        setVote(votesCopy)
+    }
     return (
         <div>
             <div>
-                {props.anecdotes[selected]}
+                {props.anecdotes[selected]}<br/>
+                has {votes[selected]} votes
             </div>
+            <button onClick={handleVote}>vote</button>
             <button onClick={handleClick}>next anecdote</button>
         </div>
     )
