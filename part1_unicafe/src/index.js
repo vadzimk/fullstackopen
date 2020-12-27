@@ -4,17 +4,21 @@ import ReactDOM from 'react-dom';
 const Button = ({text, handleClick}) => <button onClick={handleClick}>{text}</button>
 const StatLine = ({text, value}) => <div>{text} {value}</div>
 const Statistics = ({good, neutral, bad, avg, all, positive}) => {
-    return (
-        <div>
-            <p><strong>statistics</strong></p>
-            <StatLine text={'good'} value={good}/>
-            <StatLine text={'neutral'} value={neutral}/>
-            <StatLine text={'bad'} value={bad}/>
-            <StatLine text={'all'} value={all}/>
-            <StatLine text={'average'} value={avg}/>
-            <StatLine text={'positive'} value={positive}/>
-        </div>
-    )
+    if(all) {
+        return (
+            <div>
+                <p><strong>statistics</strong></p>
+                <StatLine text={'good'} value={good}/>
+                <StatLine text={'neutral'} value={neutral}/>
+                <StatLine text={'bad'} value={bad}/>
+                <StatLine text={'all'} value={all}/>
+                <StatLine text={'average'} value={avg}/>
+                <StatLine text={'positive'} value={positive}/>
+            </div>
+        )
+    }
+    //conditional rendering
+    return <p>No feedback given</p>
 }
 
 const App = () => {
