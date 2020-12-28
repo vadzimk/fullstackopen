@@ -1,6 +1,4 @@
 
-
-
 const Part = (props) => {
     return (
         <p>
