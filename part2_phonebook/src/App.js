@@ -1,16 +1,22 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import axios from 'axios'
 
 
 const App = () => {
-    const [persons, setPersons] = useState([
-        {name: 'Arto Hellas', number: '040-123456'},
-        {name: 'Ada Lovelace', number: '39-44-5323523'},
-        {name: 'Dan Abramov', number: '12-43-234345'},
-        {name: 'Mary Poppendieck', number: '39-23-6423122'}
-    ])
+    const [persons, setPersons] = useState([])
+
+    const fetchData=()=>{
+        console.log('starting to fetch data...')
+        const eventHandler =(response)=>{console.log('promise fulfilled', response); setPersons(response.data)}
+        axios.get('http://127.0.0.1:3001/persons').then(eventHandler)
+    }
+    useEffect(fetchData, [])
+
+
+
     const [newName, setNewName] = useState('')  // controls form input element
     const [newNumber, setNewNumber] = useState('')
     const [searchName, setSearchName] = useState('')
