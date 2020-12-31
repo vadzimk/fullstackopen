@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import axios from "axios";
-import OutputList from "./components/OutputList";
 import InputField from "./components/InputField";
+import OutputView from "./components/OutputView";
 
 const App = () => {
-
     const [searchCountry, setSearchCountry] = useState('')
     const [countries, setCountries] = useState([])
+
     // after data are fetched component rerenders and variable countries carries data
     const matched_countries = searchCountry ? countries.filter(item => item.name.toLowerCase().search(searchCountry.toLowerCase()) !== -1) : []
 
@@ -26,7 +26,7 @@ const App = () => {
     return (
         <div>
             <InputField value={searchCountry} onChange={e => setSearchCountry(e.target.value)}/>
-            <OutputList countries={matched_countries}/>
+            <OutputView matched_countries={matched_countries}/>
         </div>
     )
 }
