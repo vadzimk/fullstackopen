@@ -24,13 +24,12 @@ const OutputView = ({matched_countries}) => {
 
     useEffect(displaySingleCounty)  // could not update state in the component - caused infinite re-render, solved by putting it in useEffect
 
+    if(countryToShow){
+        return <CountryView country={countryToShow}/>
+    } else{
+        return <OutputList matched_countries={matched_countries} handleShow={handleShow}/>
+    }
 
-    return (
-        <div>
-            <OutputList matched_countries={matched_countries} handleShow={handleShow}/>
-            <CountryView country={countryToShow}/>
-        </div>
-    )
 }
 
 export default OutputView
