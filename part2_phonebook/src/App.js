@@ -4,6 +4,7 @@ import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 
 import mid from "./services/middleware";
+import Notification from "./components/Notification";
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -18,7 +19,9 @@ const App = () => {
     const [newName, setNewName] = useState('')  // controls form input element
     const [newNumber, setNewNumber] = useState('')
     const [searchName, setSearchName] = useState('')
+    const [notificationMsg, setNotificationMsg] = useState('')
     const personsToShow = persons.filter(item => item.name.toLowerCase().search(searchName.toLowerCase()) !== -1)
+
 
 
     const addPerson = (e) => {
@@ -32,26 +35,46 @@ const App = () => {
                     name: newName,
                     number: newNumber
                 }
-                mid.createNew(newPersonObj).then((data) => setPersons(persons.concat(data)))
+                mid.createNew(newPersonObj).then((data) => {
+                    setPersons(persons.concat(data))
+                    notify(`Added ${data.name}`)
+                })
+
             } else if (match.length === 1 && match[0].number !== newNumber && window.confirm(`${match[0].name} is already exists, replace number?`)) {
                 mid.updatePerson(match[0].id, {...match[0], number: newNumber})
-                    .then(data => setPersons(persons.map(item => item.id !== match[0].id ? item : data)))
+                    .then(data => {
+                        setPersons(persons.map(item => item.id !== match[0].id ? item : data))
+                        notify(`Updated ${data.name}`)
+                    })
             }
             setNewName('')
             setNewNumber('')
+
         }
     }
 
     const deletePerson = (id) => {
         if (window.confirm(`Delete ${persons.find(item => item.id === id).name}?`)) {  // window confirmation dialogue
             mid.deletePerson(id)
-                .then(status => status === 200 ? setPersons(persons.filter(person => person.id !== id)) : null)
+                .then(status => {
+                    if(status === 200) {
+                        let removedName = persons.find((person)=>person.id ===id ).name
+                        setPersons(persons.filter(person => person.id !== id))
+                        notify(`Deleted ${removedName}`)
+                    }
+                })
         }
+    }
+
+    const notify=(msg)=>{
+        setNotificationMsg(msg)
+        setTimeout(()=>setNotificationMsg(null), 5000)
     }
 
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notification message={notificationMsg}/>
             <Filter value={searchName} onChange={e => setSearchName(e.target.value)}/>
             <h3>add new</h3>
             <PersonForm onSubmit={addPerson} namevalue={newName} namechange={e => setNewName(e.target.value)}
