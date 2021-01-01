@@ -20,6 +20,7 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
     const [searchName, setSearchName] = useState('')
     const [notificationMsg, setNotificationMsg] = useState('')
+    const [isError, setIsError] = useState(false)
     const personsToShow = persons.filter(item => item.name.toLowerCase().search(searchName.toLowerCase()) !== -1)
 
 
@@ -38,14 +39,15 @@ const App = () => {
                 mid.createNew(newPersonObj).then((data) => {
                     setPersons(persons.concat(data))
                     notify(`Added ${data.name}`)
-                })
+                }).catch((err)=>notify(err.statusText,true))
 
             } else if (match.length === 1 && match[0].number !== newNumber && window.confirm(`${match[0].name} is already exists, replace number?`)) {
-                mid.updatePerson(match[0].id, {...match[0], number: newNumber})
+                let objToUpdate = match[0]
+                mid.updatePerson(objToUpdate.id, {...objToUpdate, number: newNumber})
                     .then(data => {
-                        setPersons(persons.map(item => item.id !== match[0].id ? item : data))
+                        setPersons(persons.map(item => item.id !== objToUpdate.id ? item : data))
                         notify(`Updated ${data.name}`)
-                    })
+                    }).catch((err)=>notify(`${objToUpdate.name} was removed from the server`, true))
             }
             setNewName('')
             setNewNumber('')
@@ -62,19 +64,20 @@ const App = () => {
                         setPersons(persons.filter(person => person.id !== id))
                         notify(`Deleted ${removedName}`)
                     }
-                })
+                }).catch((err)=>notify(err.statusText, true))
         }
     }
 
-    const notify=(msg)=>{
+    const notify=(msg, signalErr=false)=>{
         setNotificationMsg(msg)
+        setIsError(signalErr)
         setTimeout(()=>setNotificationMsg(null), 5000)
     }
 
     return (
         <div>
             <h2>Phonebook</h2>
-            <Notification message={notificationMsg}/>
+            <Notification message={notificationMsg} isError={isError}/>
             <Filter value={searchName} onChange={e => setSearchName(e.target.value)}/>
             <h3>add new</h3>
             <PersonForm onSubmit={addPerson} namevalue={newName} namechange={e => setNewName(e.target.value)}

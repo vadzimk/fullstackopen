@@ -1,4 +1,4 @@
-const Notification = ({message}) => {
+const Notification = ({message, isError}) => {
 
     const msgStyle = {
         color: "green",
@@ -10,12 +10,18 @@ const Notification = ({message}) => {
         marginBottom: 10
     }
 
+    const errStyle={
+        ...msgStyle,
+        color: "red",
+        borderColor: "red",
+
+    }
 
     if (!message)
         return null
     else
         return (
-            <div style={msgStyle}>
+            <div style={isError ? errStyle : msgStyle}>
                 {message}
             </div>
         )
