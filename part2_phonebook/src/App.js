@@ -10,7 +10,7 @@ const App = () => {
 
     const fetchData = () => {
         console.log('starting to fetch data...')
-        mid.getAll().then(data => setPersons(data)).catch((reason)=>alert(`getAll rejected ${reason}`))
+        mid.getAll().then(data => setPersons(data)).catch((reason) => alert(`getAll rejected ${reason}`))
     }
     useEffect(fetchData, [])
 
@@ -25,17 +25,24 @@ const App = () => {
         e.preventDefault()
         const match = persons.filter(item => item.name === newName)
         // console.log(match)
-        if (match.length === 0 && newNumber !== '') {
+        if (match.length === 0 && newNumber !== '') {  // check if already exists in the list
             let newPersonObj = {
                 name: newName,
                 number: newNumber
             }
-            mid.createNew(newPersonObj).then((data)=>setPersons(persons.concat(data)))
+            mid.createNew(newPersonObj).then((data) => setPersons(persons.concat(data)))
 
             setNewName('')
             setNewNumber('')
         } else if (match.length !== 0) {
             window.alert(`${newName} is already added to phonebook`)
+        }
+    }
+
+    const deletePerson = (id) => {
+        if (window.confirm(`Delete ${persons.find(item => item.id === id).name}?`)) {
+            mid.deletePerson(id)
+                .then(status => status === 200 ? setPersons(persons.filter(person => person.id !== id)) : null)
         }
     }
 
@@ -47,7 +54,7 @@ const App = () => {
             <PersonForm onSubmit={addPerson} namevalue={newName} namechange={e => setNewName(e.target.value)}
                         numbervalue={newNumber} numberchange={e => setNewNumber(e.target.value)}/>
             <h3>Numbers</h3>
-            <Persons personsToShow={personsToShow}/>
+            <Persons personsToShow={personsToShow} deletePerson={deletePerson}/>
         </div>
 
     )
