@@ -25,22 +25,25 @@ const App = () => {
         e.preventDefault()
         const match = persons.filter(item => item.name === newName)
         // console.log(match)
-        if (match.length === 0 && newNumber !== '') {  // check if already exists in the list
-            let newPersonObj = {
-                name: newName,
-                number: newNumber
-            }
-            mid.createNew(newPersonObj).then((data) => setPersons(persons.concat(data)))
 
+        if (newNumber) {
+            if (match.length === 0) {  // check if already exists in the list
+                let newPersonObj = {
+                    name: newName,
+                    number: newNumber
+                }
+                mid.createNew(newPersonObj).then((data) => setPersons(persons.concat(data)))
+            } else if (match.length === 1 && match[0].number !== newNumber && window.confirm(`${match[0].name} is already exists, replace number?`)) {
+                mid.updatePerson(match[0].id, {...match[0], number: newNumber})
+                    .then(data => setPersons(persons.map(item => item.id !== match[0].id ? item : data)))
+            }
             setNewName('')
             setNewNumber('')
-        } else if (match.length !== 0) {
-            window.alert(`${newName} is already added to phonebook`)
         }
     }
 
     const deletePerson = (id) => {
-        if (window.confirm(`Delete ${persons.find(item => item.id === id).name}?`)) {
+        if (window.confirm(`Delete ${persons.find(item => item.id === id).name}?`)) {  // window confirmation dialogue
             mid.deletePerson(id)
                 .then(status => status === 200 ? setPersons(persons.filter(person => person.id !== id)) : null)
         }
